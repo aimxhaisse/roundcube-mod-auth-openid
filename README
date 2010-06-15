@@ -1,0 +1,2 @@
+A roundcube plugin providing an automatic connection to an imap server with 
+mod-auth-openid from apache.
