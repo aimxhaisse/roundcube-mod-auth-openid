@@ -1,2 +1,5 @@
 A roundcube plugin providing an automatic connection to an imap server with 
 mod-auth-openid from apache.
+
+Documentation and installation instructions are available at :
+http://aimxhaisse.com/wiki/doku.php?id=roundcube_mod-auth-openid
