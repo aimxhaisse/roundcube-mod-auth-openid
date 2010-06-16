@@ -40,4 +40,4 @@ read mailboxes of others.
 
   - More documentation: http://aimxhaisse.com/wiki/doku.php?id=roundcube_mod-auth-openid
   - Dovecot and Master users: http://wiki.dovecot.org/Authentication/MasterUsers
-  - mod-auth-openid: 
+  - mod-auth-openid: http://trac.butterfat.net/public/mod_auth_openid
