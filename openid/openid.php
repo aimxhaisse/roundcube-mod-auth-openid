@@ -21,8 +21,12 @@ class openid extends rcube_plugin
   // Register actions
   function init()
   {
-    $this->add_hook('startup', array($this, 'startup'));
-    $this->add_hook('authenticate', array($this, 'authenticate'));
+    // If REMOTE_USER is not set, mod-auth-openid is not active
+    // Relying on it allow to have several virtualhosts with different way to authenticate
+    if (isset($_SERVER['REMOTE_USER'])) {
+      $this->add_hook('startup', array($this, 'startup'));
+      $this->add_hook('authenticate', array($this, 'authenticate'));
+    }
   }
 
   // Change action to Login if not yet authenticated
