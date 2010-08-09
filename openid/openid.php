@@ -18,26 +18,49 @@ define('MASTER_USER_PASS', 'xxx');
 
 class openid extends rcube_plugin
 {
+  public $task = 'login';
+
   // Register actions
   function init()
   {
     // If REMOTE_USER is not set, mod-auth-openid is not active
-    // Relying on it allow to have several virtualhosts with different way to authenticate
+    // Relying on it allow to have several virtualhosts with different ways to authenticate
     if (isset($_SERVER['REMOTE_USER'])) {
       $this->add_hook('startup', array($this, 'startup'));
       $this->add_hook('authenticate', array($this, 'authenticate'));
+      $this->add_hook('create_user', array($this, 'create_user'));
     }
+  }
+
+  // Overlap creation of new accounts so as to avoid having
+  // default identities following the pattern user*masteruser@domain.
+  // Instead use user@domain
+  function create_user($profile)
+  {
+    $profile['user'] = substr($profile['user'], 0, strpos($profile['user'], '*'));
+    $profile['user_name'] = $profile['user'];
+
+    $rcmail = rcmail::get_instance();
+    $mail_domain = $rcmail->config->get('mail_domain');
+
+    if ($mail_domain)
+      {
+        $profile['user_email'] = $profile['user'] . '@' . $mail_domain;
+      }
+
+    return $profile;
   }
 
   // Change action to Login if not yet authenticated
   function startup($args)
   {
-    if ($args['task'] == 'mail' && empty($args['action']) && 
-	empty($_SESSION['user_id']) && !empty($_SERVER['REMOTE_USER']))
+    if (empty($args['action']) && 
+	empty($_SESSION['user_id']) &&
+	!empty($_SERVER['REMOTE_USER']))
       {
 	$args['action'] = 'login';
       }
-
+    $args['cookiecheck'] = false;
     return $args;
   }
 
@@ -58,7 +81,7 @@ class openid extends rcube_plugin
     return $args;
   }
   
-  // extract the trigram from an openid url (makina-corpus related) - last part of the identity
+  // extract the trigram from an openid url - last part of the identity
   function extractLoginFromOpenid($openid_url)
   {
     $matches = array();
