@@ -77,6 +77,7 @@ class openid extends rcube_plugin
 	    $args['user'] = $username . '*' . MASTER_USER_LOGIN;
 	    $args['pass'] = MASTER_USER_PASS;
 	  }
+        $args['valid'] = true;
       }
     return $args;
   }
